@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<meta charSet="utf-8" />
+		<meta name="description" content="プリコネRのタワーパズル" />
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:site" content="@JADENgygo" />
+		<meta property="og:url" content="https://priconne-tower.vercel.app" />
+		<meta property="og:title" content="プリコネタワー" />
+		<meta property="og:description" content="プリコネRのタワーパズル" />
+		<meta property="og:image" content="https://priconne-tower.vercel.app/peko.png" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>プリコネタワー</title>
+		<link rel="icon" href="/peko.png" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+		<link href="style.css" rel="stylesheet" />
+	</head>
+	<body class="text-center mt-3">
+		<div class="content">
+			<p class="fs-1">プリコネタワー</p>
+			<div id="game"></div>
+			<footer class="bg-secondary bg-opacity-25 text-center pt-3 pb-3">
+				<div>
+					<a href="https://twitter.com/@JADENgygo" className="me-3 link-dark" ><img src="twitter.svg" /></a>
+					<a href="https://priconne-portfolio.vercel.app" class="link-dark">プリコネツール</a>
+				</div>
+				<div>画像: &copy; Cygames, Inc.</div>
+			</footer>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+		<script>
+			const config = {
+				parent: "game",
+				type: Phaser.AUTO,
+				width: 800,
+				height: 600,
+				physics: {
+					default: 'arcade',
+					arcade: {
+						gravity: { y: 200 }
+					}
+				},
+				scene: {
+					preload: preload,
+					create: create
+				}
+			};
+
+			const game = new Phaser.Game(config);
+
+			function preload ()
+			{
+				this.load.image('plate', './plate.png');
+				this.load.image('peko', './pudding_peko.png');
+				this.load.image('kokkoro', './pudding_kokkoro.png');
+				this.load.image('kyaru', './pudding_kyaru.png');
+				this.load.image('sheffy', './pudding_sheffy.png');
+				const s = this.load.image('labyrista', './pudding_labyrista.png');
+				console.log(s);
+			}
+
+			function create ()
+			{
+				this.add.graphics().fillStyle(0x000, 1).fillRect(0, 0, 800, 600);
+				const { width, height } = this.sys.game.canvas;
+				this.add.image(0, 300, 'sara');
+				this.add.image(0, 300, 'peko');
+				this.add.image(0, 300, 'kokkoro');
+				this.add.image(0, 300, 'kyaru');
+				this.add.image(0, 300, 'sheffy');
+				const labyrista = this.add.image(500, 300, 'labyrista').setInteractive();
+				labyrista.on('pointerdown', pointer => {
+					console.log("here");
+				});
+			}
+		</script>
+	</body>
+</html>
+
