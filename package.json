@@ -5,11 +5,7 @@
   "repository": "https://github.com/JADENgygo/priconne-tower.git",
   "author": "JADEN <29948746+JADENgygo@users.noreply.github.com>",
   "license": "MIT",
-  "dependencies": {
-    "bootstrap": "^5.2.0",
-    "bootstrap-icons": "^1.9.1",
-    "phaser": "^3.55.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "reload": "^3.2.0"
   },

@@ -8,17 +8,34 @@
 		<meta property="og:title" content="プリコネタワー" />
 		<meta property="og:description" content="プリコネRのタワーパズル" />
 		<meta property="og:image" content="https://priconne-tower.vercel.app/peko.png" />
-		<!-- <meta name="viewport" content="width=device-width,initial-scale=1" /> -->
-		<meta name="viewport" content="width=800" />
+		<meta name="viewport" content="width=640" />
 		<title>プリコネタワー</title>
 		<link rel="icon" href="/peko.png" />
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-		<link href="style.css" rel="stylesheet" />
+		<style>
+			.content {
+			  position: relative;
+			  min-height: 100vh;
+			  padding: 0 0 150px 0;
+			}
+
+			footer {
+			  position: absolute;
+			  bottom: 0;
+			  width: 100%;
+			}
+
+		</style>
 	</head>
 	<body class="text-center">
 		<div class="content">
-			<p class="fs-1 pt-3">プリコネタワー</p>
-			<div id="game"></div>
+			<div class="conatiner">
+				<p class="fs-1 pt-3">プリコネタワー</p>
+				<p>全てのプリンを一番右のお皿に移動させるとクリア！</p>
+				<p>大きいプリンは小さいプリンの上には置けないよ</p>
+				<p>最小31回でクリアできるよ</p>
+				<div id="game"></div>
+			</div>
 			<footer class="bg-secondary bg-opacity-25 text-center pt-3 pb-3">
 				<div>
 					<a href="https://twitter.com/@JADENgygo" className="me-3 link-dark" ><img src="twitter.svg" /></a>
@@ -33,8 +50,8 @@
 			const config = {
 				parent: "game",
 				type: Phaser.AUTO,
-				width: 800,
-				height: 600,
+				width: 640,
+				height: 480,
 				physics: {
 					default: 'arcade',
 					arcade: {
@@ -43,36 +60,146 @@
 				},
 				scene: {
 					preload: preload,
-					create: create
+					create: create,
+					update: update,
 				}
 			};
 
 			const game = new Phaser.Game(config);
 
-			function preload ()
-			{
+			function preload() {
 				this.load.image('plate', './plate.png');
 				this.load.image('peko', './pudding_peko.png');
-				this.load.image('kokkoro', './pudding_kokkoro.png');
-				this.load.image('kyaru', './pudding_kyaru.png');
-				this.load.image('sheffy', './pudding_sheffy.png');
-				const s = this.load.image('labyrista', './pudding_labyrista.png');
-				console.log(s);
 			}
 
-			function create ()
-			{
-				this.add.graphics().fillStyle(0x000, 1).fillRect(0, 0, 800, 600);
-				const { width, height } = this.sys.game.canvas;
-				this.add.image(0, 300, 'sara');
-				this.add.image(0, 300, 'peko');
-				this.add.image(0, 300, 'kokkoro');
-				this.add.image(0, 300, 'kyaru');
-				this.add.image(0, 300, 'sheffy');
-				const labyrista = this.add.image(500, 300, 'labyrista').setInteractive();
-				labyrista.on('pointerdown', pointer => {
-					console.log("here");
+			const scales = [0.6, 0.5, 0.4, 0.3, 0.2];
+			let positions = [[0, 1, 2, 3, 4], [], []];
+			let puddings = [];
+			let target = null;
+			let offset = 0;
+			let score = 0;
+			let exploded = false;
+			let scoreText;
+			let passedText;
+			let resetText;
+
+			function create() {
+				this.add.graphics().fillStyle(0xffffff, 1).fillRect(0, 0, 640, 480);
+
+				const leftPlate = this.add.image(110, 400, 'plate');
+				leftPlate.setScale(0.8);
+				const centerPlate = this.add.image(320, 400, 'plate');
+				centerPlate.setScale(0.8);
+				const rightPlate = this.add.image(530, 400, 'plate');
+				rightPlate.setScale(0.8);
+
+				for (let i = 0; i < 5; ++i) {
+					const image = this.add.image(0, 0, "peko");
+					image.setScale(scales[i]);
+					puddings.push(image);
+				}
+
+				const left = this.add.graphics().fillStyle(0xffffff, 0).fillRect(0, 0, 640 / 3, 480).setInteractive(
+					new Phaser.Geom.Rectangle(0, 0, 640 / 3, 480), Phaser.Geom.Rectangle.Contains
+				);
+				left.on('pointerdown', pointer => move(0));
+				const center = this.add.graphics().fillStyle(0xffffff, 0).fillRect(640 / 3, 0, 640 * 2 / 3, 480).setInteractive(
+					new Phaser.Geom.Rectangle(640 / 3, 0, 640 * 2 / 3, 480), Phaser.Geom.Rectangle.Contains
+				);
+				center.on('pointerdown', pointer => move(1));
+				const right = this.add.graphics().fillStyle(0xffffff, 0).fillRect(640 * 2 / 3, 0, 640, 480).setInteractive(
+					new Phaser.Geom.Rectangle(640 * 2 / 3, 0, 640, 480), Phaser.Geom.Rectangle.Contains
+				);
+				right.on('pointerdown', pointer => move(2));
+
+				scoreText = this.add.text(530, 50, "移動回数\n0回", {font: "20px sans-serif", fill: "#000"});
+				passedText = this.add.text(260, 200, "", {font: "30px serif", fill: "#ff0000"});
+				resetText = this.add.text(50, 50, "リセット", {font: "20px serif", fill: "#ff0000"}).setInteractive();
+				resetText.on("pointerdown", pointer => {
+					positions = [[0, 1, 2, 3, 4], [], []];
+					puddings.forEach(e => e.angle = 0);
+					target = null;
+					offset = 0;
+					score = 0;
+					scoreText.text = "移動回数\n0回";
+					exploded = false;
+					passedText.text = "";
+					resetText.text = "リセット";
+					resetText.x = 50;
+					resetText.y = 50;
+					resetText.setFill("#ff0000");
 				});
+			}
+
+			const move = index => {
+				if (positions[2].length === 5) {
+					exploded = true;
+					return;
+				}
+				if (target === null) {
+					if (positions[index].length === 0) {
+						return;
+					}
+					offset = 50 - offset;
+					target = index;
+					return;
+				}
+
+				if (target === index) {
+					offset = 50 - offset;
+					target = null;
+					return;
+				}
+				if (positions[target][positions[target].length - 1] < positions[index][positions[index].length - 1]) {
+					return;
+				}
+				const e = positions[target].pop();
+				positions[index].push(e);
+				offset = 50 - offset;
+				target = null;
+				score++;
+				scoreText.text = `移動回数\n${score}回`;
+			};
+
+			const xs = [...Array(5)].map(_ => Math.random() * 10);
+			const ys = [...Array(5)].map(_ => Math.random() * 10);
+			const rotations = [...Array(5)].map(_ => (Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
+
+			function update() {
+				if (positions[2].length === 5) {
+					passedText.text = "クリア！";
+					resetText.text = "もう一度プレイ";
+					resetText.setFill("#000");
+					resetText.x = 245;
+					resetText.y = 280;
+					if (exploded) {
+						puddings.forEach((e, i) => {
+							if (e.x + xs[i] < 0 || 640 < e.x + xs[i]) {
+								xs[i] = -xs[i];
+							}
+							if (e.y + ys[i] < 0 || 480 < e.y + ys[i]) {
+								ys[i] = -ys[i];
+							}
+							e.x += xs[i];
+							e.y += ys[i];
+							e.angle += rotations[i];
+						});
+						return;
+					}
+				}
+				for (let [i, e] of positions.entries()) {
+					if (e.length === 0) {
+						continue;
+					}
+					for (let [ii, ee] of e.entries()) {
+						const xs = [115, 325, 535];
+						const ys = [350, 365, 375, 385, 395];
+						const coefficient = i === target && ii + 1 === e.length ? 1 : 0;
+						const height = e.slice(0, ii).map(e => puddings[e].height * scales[e] / 2).reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+						puddings[ee].x = xs[i];
+						puddings[ee].y = ys[e[0]] - height  - offset * coefficient;
+					}
+				}
 			}
 		</script>
 	</body>
