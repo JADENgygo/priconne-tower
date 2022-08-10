@@ -12,6 +12,6 @@
   },
   "scripts": {
     "start": "reload -b",
-    "minify": "html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true -o public/index.html src/index.html"
+    "minify": "rm -rf public && mkdir public && cp -R img public && html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true -o public/index.html index.html"
   }
 }
