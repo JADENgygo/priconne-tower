@@ -4,14 +4,30 @@
   "main": "index.js",
   "repository": "https://github.com/JADENgygo/priconne-tower.git",
   "author": "JADEN <29948746+JADENgygo@users.noreply.github.com>",
-  "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
-    "html-minifier": "^4.0.0",
-    "reload": "^3.2.0"
+    "@babel/core": "^7.19.3",
+    "@babel/preset-env": "^7.19.3",
+    "babel-loader": "^8.2.5",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.1",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.1",
+    "sass": "^1.55.0",
+    "sass-loader": "^13.1.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.2",
+    "bootstrap-icons": "^1.9.1",
+    "phaser": "^3.55.2"
   },
   "scripts": {
-    "start": "reload -b",
-    "minify": "rm -rf public && mkdir public && cp -R img public && html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true -o public/index.html index.html"
+    "serve": "webpack serve --mode=development",
+    "build:dev": "webpack --mode=development",
+    "build": "webpack --mode=production"
   }
 }
