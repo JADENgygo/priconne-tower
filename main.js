@@ -46,8 +46,8 @@ const config = {
 new Phaser.Game(config);
 
 function preload() {
-  this.load.image('plate', 'img/plate.png');
-  this.load.image('peko', 'img/pudding_peko.png');
+  this.load.image('plate', 'img/plate.webp');
+  this.load.image('peko', 'img/pudding_peko.webp');
 }
 
 const scales = [0.6, 0.5, 0.4, 0.3, 0.2];

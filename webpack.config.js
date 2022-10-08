@@ -23,9 +23,18 @@ module.exports = (env, argv) => {
             {
               loader: "css-loader",
               options: {
-                url: false,
                 sourceMap: argv === "development",
                 importLoaders: 2,
+              }
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    ["autoprefixer", { grid: true}]
+                  ]
+                }
               }
             },
             {
