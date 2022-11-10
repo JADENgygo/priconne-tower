@@ -27,7 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <meta name="viewport" content="width=800,initial-scale=1" />
+        <meta name="viewport" content="width=800" />
         <title>プリコネタワー</title>
       </Head>
       <div className="content pt-1">
