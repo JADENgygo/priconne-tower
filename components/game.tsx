@@ -29,6 +29,7 @@ export default function Game() {
     };
 
     new Phaser.Game(config);
+    console.log('phaser.game')
 
     function preload(this: Phaser.Scene) {
       this.load.image('plate', '/plate.webp');

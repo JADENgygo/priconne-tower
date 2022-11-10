@@ -1,10 +1,13 @@
 import dynamic from 'next/dynamic';
 import { GetServerSideProps } from "next";
+import { useMemo } from 'react';
 
 export default function Home() {
-  const Game: React.ComponentType<{}> = typeof window === "undefined" ?
-    dynamic( () => import('../components/dummy'), { ssr: false }) :
-    dynamic( () => import('../components/game'), { ssr: false });
+  // const Game: React.ComponentType<{}> = typeof window === "undefined" ?
+  //   dynamic(() => import('../components/dummy'), { ssr: false }) :
+  //   dynamic(() => import('../components/game'), { ssr: false });
+  const Game = dynamic(() => import('../components/game'), { ssr: false });
+  const gameMemo = useMemo(() => <Game />, []);
   return (
     <div className="container">
       <div className="text-center">
@@ -13,7 +16,8 @@ export default function Home() {
         <p>最小31回でクリアできるよ</p>
       </div>
       <div id="game" className="text-center"></div>
-      <Game />
+      {/* <Game /> */}
+      { gameMemo }
     </div>
   )
 }
