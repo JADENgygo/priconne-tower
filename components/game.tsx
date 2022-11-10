@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { useEffect, useRef } from "react";
-import { parseCookies, setCookie } from "nookies";
+import { parseCookies } from "nookies";
 
 export default function Game() {
   const ref = useRef(false);
@@ -29,7 +29,6 @@ export default function Game() {
     };
 
     new Phaser.Game(config);
-    console.log('phaser.game')
 
     function preload(this: Phaser.Scene) {
       this.load.image('plate', '/plate.webp');

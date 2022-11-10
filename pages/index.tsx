@@ -3,9 +3,6 @@ import { GetServerSideProps } from "next";
 import { useMemo } from 'react';
 
 export default function Home() {
-  // const Game: React.ComponentType<{}> = typeof window === "undefined" ?
-  //   dynamic(() => import('../components/dummy'), { ssr: false }) :
-  //   dynamic(() => import('../components/game'), { ssr: false });
   const Game = dynamic(() => import('../components/game'), { ssr: false });
   const gameMemo = useMemo(() => <Game />, []);
   return (
@@ -16,7 +13,6 @@ export default function Home() {
         <p>最小31回でクリアできるよ</p>
       </div>
       <div id="game" className="text-center"></div>
-      {/* <Game /> */}
       { gameMemo }
     </div>
   )
