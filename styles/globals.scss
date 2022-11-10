@@ -1,0 +1,36 @@
+.content {
+  position: relative;
+  min-height: 100vh;
+  padding: 0 0 150px 0;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+
+a, a:hover {
+  color: $dark;
+}
+
+.dark {
+  background-color: $dark;
+  color: $light;
+  
+  a, a:hover {
+    color: $light;
+  }
+}
